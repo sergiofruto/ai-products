@@ -3,3 +3,4 @@
 *.db*
 exports/
 __pycache__/
+*.log
