@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Test</title><link>https://www.example.com/</link><description>t</description>
+<item><title>Fresh one</title><link>https://www.example.com/a</link><pubDate>Fri, 13 Nov 2026 10:00:00 GMT</pubDate><description>LONDON (Reuters) - Something happened today.</description></item>
+<item><title>Fresh two</title><link>https://www.example.com/b</link><pubDate>Fri, 13 Nov 2026 08:00:00 GMT</pubDate><description>&lt;p&gt;Plain &lt;b&gt;body&lt;/b&gt;&lt;/p&gt;</description></item>
+<item><title>Old one</title><link>https://www.example.com/c</link><pubDate>Mon, 09 Nov 2026 08:00:00 GMT</pubDate><description>Too old.</description></item>
+</channel></rss>

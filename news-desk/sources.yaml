@@ -1,0 +1,248 @@
+# Draft feed list for Sergio's review. Verified with feedparser on 2026-11-17.
+# kind: primary (the actor itself) | wire (news agency) | outlet. reliability 0-1 is a judgement call.
+sources:
+  - name: "OpenAI News"
+    url: "https://openai.com/news/rss.xml"
+    topics: [ai]
+    kind: primary
+    reliability: 0.9
+    lang: en
+    reason: "Official OpenAI announcements; first-hand but promotional."
+  - name: "Google AI Blog"
+    url: "https://blog.google/technology/ai/rss/"
+    topics: [ai]
+    kind: primary
+    reliability: 0.9
+    lang: en
+    reason: "Official Google AI announcements; first-hand but promotional."
+  - name: "Google DeepMind"
+    url: "https://deepmind.google/blog/rss.xml"
+    topics: [ai]
+    kind: primary
+    reliability: 0.9
+    lang: en
+    reason: "Official DeepMind research posts."
+  - name: "Hugging Face Blog"
+    url: "https://huggingface.co/blog/feed.xml"
+    topics: [ai]
+    kind: primary
+    reliability: 0.75
+    lang: en
+    reason: "Open-model ecosystem posts; mix of company and community authors."
+  - name: "NVIDIA Blog"
+    url: "https://blogs.nvidia.com/feed/"
+    topics: [ai]
+    kind: primary
+    reliability: 0.8
+    lang: en
+    reason: "Official NVIDIA posts on chips and AI; marketing tone."
+  - name: "MIT Technology Review AI"
+    url: "https://www.technologyreview.com/topic/artificial-intelligence/feed"
+    topics: [ai]
+    kind: outlet
+    reliability: 0.85
+    lang: en
+    reason: "Reputable outlet with original AI reporting."
+  - name: "The Verge"
+    url: "https://www.theverge.com/rss/index.xml"
+    topics: [ai, tech]
+    kind: outlet
+    reliability: 0.75
+    lang: en
+    reason: "Fast mainstream tech outlet; good AI/product coverage."
+  - name: "Ars Technica"
+    url: "https://feeds.arstechnica.com/arstechnica/index"
+    topics: [tech]
+    kind: outlet
+    reliability: 0.85
+    lang: en
+    reason: "Deep technical reporting with low hype."
+  - name: "TechCrunch"
+    url: "https://techcrunch.com/feed/"
+    topics: [tech, ai]
+    kind: outlet
+    reliability: 0.7
+    lang: en
+    reason: "Startup and funding news; sometimes rumour-driven."
+  - name: "Wired"
+    url: "https://www.wired.com/feed/rss"
+    topics: [tech]
+    kind: outlet
+    reliability: 0.8
+    lang: en
+    reason: "Long-form tech and policy reporting."
+  - name: "The Register"
+    url: "https://www.theregister.com/headlines.atom"
+    topics: [tech]
+    kind: outlet
+    reliability: 0.75
+    lang: en
+    reason: "Enterprise and infosec news; opinionated tone."
+  - name: "Meta Engineering"
+    url: "https://engineering.fb.com/feed/"
+    topics: [tech]
+    kind: primary
+    reliability: 0.85
+    lang: en
+    reason: "Official engineering blog; low volume."
+  - name: "Genbeta"
+    url: "https://www.genbeta.com/feedburner.xml"
+    topics: [tech]
+    kind: outlet
+    reliability: 0.65
+    lang: es
+    reason: "Spanish-language software/web news."
+  - name: "Federal Reserve Press"
+    url: "https://www.federalreserve.gov/feeds/press_all.xml"
+    topics: [stocks]
+    kind: primary
+    reliability: 0.98
+    lang: en
+    reason: "Official US central bank releases; moves markets."
+  - name: "SEC Press Releases"
+    url: "https://www.sec.gov/news/pressreleases.rss"
+    topics: [stocks]
+    kind: primary
+    reliability: 0.98
+    lang: en
+    reason: "US securities regulator announcements."
+  - name: "ECB Press"
+    url: "https://www.ecb.europa.eu/rss/press.html"
+    topics: [stocks]
+    kind: primary
+    reliability: 0.98
+    lang: en
+    reason: "Official European Central Bank releases."
+  - name: "CNBC Markets"
+    url: "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"
+    topics: [stocks]
+    kind: outlet
+    reliability: 0.8
+    lang: en
+    reason: "Mainstream market news; fast, some commentary."
+  - name: "MarketWatch"
+    url: "https://feeds.content.dowjones.io/public/rss/mw_topstories"
+    topics: [stocks]
+    kind: outlet
+    reliability: 0.75
+    lang: en
+    reason: "Dow Jones market coverage; mixed news and opinion."
+  - name: "Investing.com ES"
+    url: "https://es.investing.com/rss/news.rss"
+    topics: [stocks]
+    kind: outlet
+    reliability: 0.6
+    lang: es
+    reason: "Spanish-language market headlines; thin text, aggregator feel."
+  - name: "Ambito Finanzas"
+    url: "https://www.ambito.com/rss/pages/finanzas.xml"
+    topics: [stocks, argentina]
+    kind: outlet
+    reliability: 0.7
+    lang: es
+    reason: "Argentine markets, FX and bonds."
+  - name: "UN News"
+    url: "https://news.un.org/feed/subscribe/en/news/all/rss.xml"
+    topics: [world]
+    kind: primary
+    reliability: 0.9
+    lang: en
+    reason: "Official UN reporting; institutional framing."
+  - name: "UN News ES"
+    url: "https://news.un.org/feed/subscribe/es/news/all/rss.xml"
+    topics: [world]
+    kind: primary
+    reliability: 0.9
+    lang: es
+    reason: "Spanish edition of UN News."
+  - name: "BBC World"
+    url: "https://feeds.bbci.co.uk/news/world/rss.xml"
+    topics: [world]
+    kind: outlet
+    reliability: 0.9
+    lang: en
+    reason: "Broad international coverage with strong standards."
+  - name: "Al Jazeera"
+    url: "https://www.aljazeera.com/xml/rss/all.xml"
+    topics: [world]
+    kind: outlet
+    reliability: 0.75
+    lang: en
+    reason: "Strong Global South coverage; state-funded (Qatar)."
+  - name: "DW Espanol"
+    url: "https://rss.dw.com/xml/rss-sp-all"
+    topics: [world]
+    kind: outlet
+    reliability: 0.85
+    lang: es
+    reason: "German public broadcaster, Spanish service."
+  - name: "France 24 ES"
+    url: "https://www.france24.com/es/rss"
+    topics: [world]
+    kind: outlet
+    reliability: 0.8
+    lang: es
+    reason: "French public broadcaster, Spanish service."
+  - name: "El Pais Internacional"
+    url: "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/internacional/portada"
+    topics: [world]
+    kind: outlet
+    reliability: 0.85
+    lang: es
+    reason: "Leading Spanish daily, international section."
+  - name: "Europa Press"
+    url: "https://www.europapress.es/rss/rss.aspx"
+    topics: [world]
+    kind: wire
+    reliability: 0.8
+    lang: es
+    reason: "Spanish news agency; wire-style copy."
+  - name: "Infobae Economia"
+    url: "https://www.infobae.com/arc/outboundfeeds/rss/category/economia/"
+    topics: [argentina, stocks]
+    kind: outlet
+    reliability: 0.7
+    lang: es
+    reason: "Largest Argentine digital outlet, economy section; high volume."
+  - name: "La Nacion Economia"
+    url: "https://www.lanacion.com.ar/arc/outboundfeeds/rss/category/economia/?outputType=xml"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.8
+    lang: es
+    reason: "Established Argentine daily, economy desk."
+  - name: "Clarin Economia"
+    url: "https://www.clarin.com/rss/economia/"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.75
+    lang: es
+    reason: "Largest Argentine daily; editorial line is visible."
+  - name: "Ambito Economia"
+    url: "https://www.ambito.com/rss/pages/economia.xml"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.7
+    lang: es
+    reason: "Argentine economy and FX news."
+  - name: "Perfil"
+    url: "https://www.perfil.com/feed"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.7
+    lang: es
+    reason: "Argentine general news; partisan opinion mixed in."
+  - name: "Buenos Aires Times"
+    url: "https://www.batimes.com.ar/feed"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.7
+    lang: en
+    reason: "English-language Argentina coverage; Perfil group."
+  - name: "MercoPress"
+    url: "https://en.mercopress.com/rss/"
+    topics: [argentina]
+    kind: outlet
+    reliability: 0.7
+    lang: en
+    reason: "English-language South Atlantic and Mercosur news."

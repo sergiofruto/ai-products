@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Test</title><link>https://example.com/</link><description>t</description>
+<item><title>&lt;b&gt;Hi&lt;/b&gt;&lt;script&gt;x()&lt;/script&gt;</title><link>https://example.com/h</link><pubDate>Fri, 13 Nov 2026 10:00:00 GMT</pubDate><description>&lt;div&gt;Body &lt;i&gt;text&lt;/i&gt;&lt;script&gt;y()&lt;/script&gt;&lt;/div&gt;</description></item>
+</channel></rss>
