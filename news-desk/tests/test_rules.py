@@ -54,6 +54,10 @@ def test_agreement_penalty_floor():
     assert _agr(["agreed"] + ["unverified"] * 3, 3) == 0
 
 
+def test_disputed_claims_not_penalized():
+    assert _agr(["agreed", "agreed", "disputed", "disputed"], 3) == 15
+
+
 def test_agreement_no_claims():
     assert _agr([], 3) == 0
 

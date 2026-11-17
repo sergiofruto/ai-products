@@ -68,7 +68,7 @@ def score(*, independent: int, has_primary: bool, verdicts: list[str], models_an
     if verdicts:
         agreed = verdicts.count("agreed")
         raw = config.AGREEMENT_POINTS * agreed / len(verdicts) \
-            - config.AGREEMENT_PENALTY_PER_REFUTED * (len(verdicts) - agreed)
+            - config.AGREEMENT_PENALTY_PER_REFUTED * verdicts.count("unverified")
         cap = config.AGREEMENT_CAP_BY_MODELS.get(models_answered, 0)
         agreement = round(max(0, min(raw, cap)))
     else:
