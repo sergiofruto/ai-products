@@ -28,9 +28,10 @@ def independent_count(items: list[Item]) -> int:
             a = items[i]
             if a.wire and a.wire == b.wire:
                 union(i, j)
-            elif a.lang == b.lang and SequenceMatcher(
-                    None, a.text[:SIMILARITY_CHARS], b.text[:SIMILARITY_CHARS]).ratio() >= SIMILARITY_RATIO:
-                union(i, j)
+            elif a.lang == b.lang:
+                ta, tb = a.text[:SIMILARITY_CHARS], b.text[:SIMILARITY_CHARS]
+                if ta.strip() and tb.strip() and SequenceMatcher(None, ta, tb).ratio() >= SIMILARITY_RATIO:
+                    union(i, j)
 
     first_in_group: dict[int, Item] = {}
     for i, it in enumerate(items):

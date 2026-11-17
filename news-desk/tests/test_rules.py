@@ -122,3 +122,7 @@ def test_top_sources_fills_with_reliable_and_skips_dup_hosts():
     assert [o["item_id"] for o in out] == ["a", "b", "c"]
     assert out[2]["reason"] == "Most reliable outlet"
     assert len(rules.top_sources([mk("a", "h", text="x"), mk("b", "h", text="yy")])) == 1
+
+
+def test_empty_text_not_merged():
+    assert rules.independent_count([mk("a", "h1", text=""), mk("b", "h2", text="")]) == 2
