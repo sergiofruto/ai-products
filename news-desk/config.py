@@ -57,7 +57,8 @@ VALIDATORS: list[tuple[str, str]] = [
     ("xai", os.getenv("XAI_VALIDATOR_MODEL", "grok-4-fast")),
 ]
 
-# USD per million (input, output) tokens. Claude prices: claude-api skill model table, checked 2026-11-17.
+# USD per million (input, output) tokens. Claude prices: claude-api skill model table, cached 2026-10-06.
+# Haiku's price holds for prompts up to 100K tokens (beyond that: $0.50 in / $2.50 out); our prompts stay well below.
 # The OpenAI and xAI validator models are deliberately NOT listed: their prices are unverified, so
 # budget.cost_usd prices them like the most expensive known model rather than as free.
 MODEL_PRICES: dict[str, tuple[float, float]] = {
