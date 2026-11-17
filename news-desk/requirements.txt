@@ -1,0 +1,9 @@
+flask
+requests
+feedparser
+trafilatura
+PyYAML
+anthropic
+openai
+python-dotenv
+pytest

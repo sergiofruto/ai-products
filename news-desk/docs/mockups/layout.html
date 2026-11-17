@@ -1,0 +1,94 @@
+<h2>Which layout feels like your morning news?</h2>
+<p class="subtitle">Three ways to do "multiple columns, no clickbait, no ads". The topics and headlines are placeholders; we pick your real topics next. Click the one you like (you can pick more than one if you'd mix them).</p>
+
+<style>
+  .np { font-family: Georgia, serif; font-size: 12px; line-height: 1.35; }
+  .np .cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .np .col h4 { font: 700 10px/1 system-ui, sans-serif; letter-spacing: .08em; text-transform: uppercase; border-bottom: 2px solid currentColor; padding-bottom: 4px; margin: 0 0 6px; }
+  .np .it { border-bottom: 1px solid rgba(128,128,128,.25); padding: 5px 0; }
+  .np .it b { display: block; font-size: 12.5px; }
+  .np .src { font: 10px system-ui, sans-serif; opacity: .6; margin-top: 2px; }
+  .np .lead b { font-size: 15px; }
+  .brief { font: 12px/1.45 system-ui, sans-serif; border: 1px solid rgba(128,128,128,.35); border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; }
+  .brief ol { margin: 4px 0 0; padding-left: 18px; }
+  .term { font: 11px/1.45 ui-monospace, Menlo, monospace; }
+  .term .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .term h4 { margin: 0 0 4px; font-size: 11px; opacity: .7; }
+  .term .row { padding: 3px 0; border-bottom: 1px dashed rgba(128,128,128,.3); }
+  .tag { display: inline-block; font-size: 9px; padding: 0 4px; border-radius: 3px; border: 1px solid rgba(128,128,128,.5); margin-right: 4px; }
+  .why { opacity: .65; }
+</style>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>The newspaper: one column per topic</h3>
+      <p>Calm, print-like. Each story is a headline plus one plain sentence, and how many sources reported it. Click to read the summary and the original links.</p>
+      <div class="mockup"><div class="mockup-header">Sat, Nov 14 · updated 07:00</div><div class="mockup-body np">
+        <div class="cols">
+          <div class="col"><h4>AI</h4>
+            <div class="it lead"><b>Lab ships new open-weights model</b>Beats last year's frontier models on coding; free to run locally.<div class="src">6 sources</div></div>
+            <div class="it"><b>EU AI Act: first fines</b>Two companies fined for missing transparency rules.<div class="src">3 sources</div></div></div>
+          <div class="col"><h4>Chips &amp; security</h4>
+            <div class="it lead"><b>New export limits on HBM memory</b>Affects shipments to three countries from January.<div class="src">5 sources</div></div>
+            <div class="it"><b>Critical VPN flaw exploited</b>CISA adds it to the known-exploited list.<div class="src">4 sources</div></div></div>
+          <div class="col"><h4>Argentina</h4>
+            <div class="it lead"><b>Inflation comes in at 1.9%</b>Lowest monthly figure in five years.<div class="src">7 sources</div></div>
+            <div class="it"><b>Dólar MEP steady</b>Gap with official rate under 5%.<div class="src">3 sources</div></div></div>
+          <div class="col"><h4>World</h4>
+            <div class="it lead"><b>Climate summit ends without deal</b>Talks extend to next year.<div class="src">9 sources</div></div>
+            <div class="it"><b>Central banks hold rates</b>Fed and ECB both pause.<div class="src">6 sources</div></div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>The brief first, then the columns</h3>
+      <p>Same columns as A, but on top a 5-line "if you only read this" written by the models. Good for a 2-minute coffee check.</p>
+      <div class="mockup"><div class="mockup-header">Sat, Nov 14 · updated 07:00</div><div class="mockup-body np">
+        <div class="brief"><b>Today in 5 lines</b><ol>
+          <li>A new open-weights model matches last year's best on coding.</li>
+          <li>Argentina's monthly inflation hits a five-year low: 1.9%.</li>
+          <li>New US limits on HBM memory exports start in January.</li>
+          <li>A critical VPN flaw is being exploited; patch if you use it.</li>
+          <li>The climate summit ended without a deal.</li></ol></div>
+        <div class="cols">
+          <div class="col"><h4>AI</h4><div class="it"><b>Lab ships new open model</b><div class="src">6 sources</div></div></div>
+          <div class="col"><h4>Chips &amp; security</h4><div class="it"><b>New HBM export limits</b><div class="src">5 sources</div></div></div>
+          <div class="col"><h4>Argentina</h4><div class="it"><b>Inflation at 1.9%</b><div class="src">7 sources</div></div></div>
+          <div class="col"><h4>World</h4><div class="it"><b>Summit ends, no deal</b><div class="src">9 sources</div></div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>The terminal: dense, with "why it matters"</h3>
+      <p>Like Silicon Intel. More stories per screen, each with a tag and one line on why it matters to you. Less pretty, more signal.</p>
+      <div class="mockup"><div class="mockup-header">news@desk ~ 2026-11-14 07:00</div><div class="mockup-body term">
+        <div class="cols">
+          <div><h4>## AI</h4>
+            <div class="row"><span class="tag">model</span>Open-weights model beats frontier on coding <span class="why">→ try it in your agents</span></div>
+            <div class="row"><span class="tag">policy</span>EU AI Act first fines <span class="why">→ affects US/EU clients</span></div>
+            <div class="row"><span class="tag">tools</span>Claude Code adds feature X <span class="why">→ you use it daily</span></div></div>
+          <div><h4>## Chips / Sec</h4>
+            <div class="row"><span class="tag">supply</span>HBM export limits Jan <span class="why">→ GPU prices</span></div>
+            <div class="row"><span class="tag">CVE</span>VPN flaw in KEV <span class="why">→ patch now</span></div>
+            <div class="row"><span class="tag">fab</span>New 2nm line delayed <span class="why">→ 2027 supply</span></div></div>
+          <div><h4>## Argentina</h4>
+            <div class="row"><span class="tag">macro</span>CPI 1.9% m/m <span class="why">→ 5-year low</span></div>
+            <div class="row"><span class="tag">fx</span>MEP gap &lt;5% <span class="why">→ USD salary math</span></div>
+            <div class="row"><span class="tag">tech</span>Startup raises $40M in BA <span class="why">→ hiring</span></div></div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+</div>
