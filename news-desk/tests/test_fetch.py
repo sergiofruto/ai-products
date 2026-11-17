@@ -117,3 +117,24 @@ def test_load_sources_valid():
         assert set(s) >= {"name", "url", "topics", "kind", "reliability", "lang", "reason"}
         assert set(s["topics"]) <= keys and s["kind"] in ("primary", "wire", "outlet")
         assert s["lang"] in ("en", "es") and 0 <= s["reliability"] <= 1
+
+
+def test_garbage_and_http_error_feeds_are_logged_and_skipped(caplog):
+    get = getter({
+        "https://junk.example/rss": b"<html>nope</html>",
+        "https://feed.example/rss": (FIX / "feed_ok.xml").read_bytes(),
+    })  # https://missing.example/rss is unmapped -> 404
+    srcs = [src("Junk", "https://junk.example/rss"), src("Missing", "https://missing.example/rss"), src("Good")]
+    with caplog.at_level("WARNING"):
+        items = fetch.fetch_all(srcs, NOW, get=get)
+    assert items and {i.source for i in items} == {"Good"}
+    msgs = [r.getMessage() for r in caplog.records if r.levelname == "WARNING"]
+    assert any("Junk" in m for m in msgs) and any("Missing" in m for m in msgs)
+
+
+def test_dedupes_same_url_same_topic_across_sources():
+    get = getter({"https://feed.example/rss": (FIX / "feed_ok.xml").read_bytes(),
+                  "https://feed2.example/rss": (FIX / "feed_ok.xml").read_bytes()})
+    items = fetch.fetch_all([src("First"), src("Second", "https://feed2.example/rss")], NOW, get=get)
+    assert len(items) == 2 and len({i.id for i in items}) == 2
+    assert {i.source for i in items} == {"First"}

@@ -115,6 +115,8 @@ def _entries(src: dict, now: datetime, get, robots: _Robots, window_hours: int) 
     r = get(src["url"], headers=HEADERS, timeout=TIMEOUT)
     r.raise_for_status()
     feed = feedparser.parse(r.content)
+    if feed.bozo and not feed.entries:
+        raise ValueError(f"unparseable feed: {feed.get('bozo_exception')!r}")
     since = now - timedelta(hours=window_hours)
     out = []
     for e in feed.entries:
@@ -144,9 +146,15 @@ def _entries(src: dict, now: datetime, get, robots: _Robots, window_hours: int) 
 def fetch_all(sources: list[dict], now: datetime, get=requests.get, window_hours: int = 24) -> list[Item]:
     robots = _Robots(get)
     items: list[Item] = []
+    seen: set[str] = set()
     for src in sources:
         try:
-            items.extend(_entries(src, now, get, robots, window_hours))
+            found = _entries(src, now, get, robots, window_hours)
         except Exception as e:
             logger.warning("feed skipped %s: %s", src.get("name"), type(e).__name__)
+            continue
+        for it in found:
+            if it.id not in seen:  # same URL+topic from two sources: keep first
+                seen.add(it.id)
+                items.append(it)
     return items
