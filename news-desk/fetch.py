@@ -115,7 +115,7 @@ def _entries(src: dict, now: datetime, get, robots: _Robots, window_hours: int) 
     r = get(src["url"], headers=HEADERS, timeout=TIMEOUT)
     r.raise_for_status()
     feed = feedparser.parse(r.content)
-    if feed.bozo and not feed.entries:
+    if not feed.entries and (feed.bozo or not feed.get("version")):
         raise ValueError(f"unparseable feed: {feed.get('bozo_exception')!r}")
     since = now - timedelta(hours=window_hours)
     out = []
