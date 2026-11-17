@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ headline }} · News Desk{% endblock %}
+{% block content %}
+<article class="reader">
+  <h1>{{ headline }}</h1>
+  <div class="meta">Synthesized from {{ n_sources }} source{{ '' if n_sources == 1 else 's' }} · {{ minutes }} min read</div>
+  {% for p in paras %}
+  <p>{{ p.text }}</p>
+  {% if p.sources %}<p class="dim srcs">{% for r in p.sources %}<a href="{{ r.url }}" rel="noopener noreferrer">{{ r.source }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+  {% endfor %}
+  <a class="godeep" href="/story/{{ s.id }}/deep">&gt;_ Go deep</a>
+</article>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ headline }} · deep · News Desk{% endblock %}
+{% block bodyclass %}deep{% endblock %}
+{% block content %}
+<h1 class="dh">{{ headline }} <span class="badge badge-{{ band }}">{{ total }}</span></h1>
+<p><a href="/story/{{ s.id }}">&larr; read view</a></p>
+<div class="grid">
+  <section class="box"><h5>## article</h5>
+    {% for p in paras %}<p>{{ p.text }}</p>{% endfor %}
+    <ul class="links">{% for r in sources %}<li><a href="{{ r.url }}" rel="noopener noreferrer">{{ r.source }}</a> <span class="dim">{{ r.title }}</span></li>{% endfor %}</ul>
+  </section>
+  <section class="box"><h5>## validation{% if models < 3 %} · {{ models }} of 3 models{% endif %}</h5>
+    {% for c in claims %}
+    <div class="claim"><span class="v-{{ c.verdict }}">{{ c.symbol }}</span> {{ c.text }}
+      <div class="dim">{% for v in c.votes %}{{ v.provider }}: {{ v.vote }}{% if not loop.last %} · {% endif %}{% endfor %}</div></div>
+    {% endfor %}
+    <h5>## score</h5>
+    <table class="bd">{% for k, v in breakdown %}<tr><td>{{ k }}</td><td>{{ v }}</td></tr>{% endfor %}
+    <tr class="tot"><td>total</td><td>{{ total }}</td></tr></table>
+  </section>
+  <section class="box"><h5>## projections · Model speculation</h5>
+    {% if proj %}
+      {% if proj.watch %}<p class="dim">Watch</p><ul>{% for w in proj.watch %}<li>{% if w.date %}{{ w.date }}: {% endif %}{{ w.what }}</li>{% endfor %}</ul>{% endif %}
+      {% if proj.outcomes %}<p class="dim">Possible outcomes</p><ul>{% for o in proj.outcomes %}<li>{{ o }}</li>{% endfor %}</ul>{% endif %}
+      {% if proj.would_change %}<p class="dim">What would change it</p><ul>{% for o in proj.would_change %}<li>{{ o }}</li>{% endfor %}</ul>{% endif %}
+    {% else %}<p class="dim">Projections unavailable (cost cap or model)</p>{% endif %}
+  </section>
+  <section class="box"><h5>## source map</h5>
+    {% for t in top %}<div class="top3"><a href="{{ t.url }}" rel="noopener noreferrer">{{ t.source }}</a> <span class="dim">{{ t.kind }} · {{ t.reason }}</span></div>{% endfor %}
+    {% for r in rest %}<div class="dim"><a href="{{ r.url }}" rel="noopener noreferrer">{{ r.source }}</a> · {{ r.kind }} · {{ r.published }}</div>{% endfor %}
+  </section>
+</div>
+{% endblock %}

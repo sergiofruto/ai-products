@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+{% if not day %}
+<p class="empty">No paper yet. Run <code>python main.py run</code>.</p>
+{% else %}
+<p class="dateline">{{ day }}{% if updated %} · updated {{ updated }}{% endif %}</p>
+{% if banner %}<div class="banner">{{ banner }}</div>{% endif %}
+<div class="cols">
+{% for col in cols %}
+  <section class="col">
+    <h2>{{ col.name }}</h2>
+    {% for st in col.stories %}
+    <article class="item">
+      <a class="hl" href="/story/{{ st.id }}">{{ st.headline }}</a>
+      <p>{{ st.oneliner }}</p>
+      <div class="meta">{{ st.n_sources }} source{{ '' if st.n_sources == 1 else 's' }} <span class="badge badge-{{ st.band }}">{{ st.score }}</span></div>
+    </article>
+    {% else %}
+    <p class="dim">Nothing solid today</p>
+    {% endfor %}
+  </section>
+{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
