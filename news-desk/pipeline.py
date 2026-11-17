@@ -2,7 +2,7 @@
 import json
 import logging
 import sqlite3
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 
 import budget as budget_mod
@@ -40,11 +40,26 @@ def _queue(llm, items) -> list[tuple[str, list]]:
 
 def run(conn: sqlite3.Connection, now: datetime, llms: dict, fetch_fn,
         budget: budget_mod.Budget | None = None) -> dict:
-    now = now.astimezone(timezone.utc)
+    now = now.astimezone()  # the paper day is the local date (ruling R8)
     dt = now.date()
     day = dt.isoformat()
     budget = budget or budget_mod.Budget(conn)
 
+    all_llms = [llms["writer"], llms["cluster"], *llms["validators"]]
+    saved = [(m, m.__dict__.get("today")) for m in all_llms]
+    for m in all_llms:  # every model checks and records against the same day for the whole run
+        m.today = lambda: dt
+    try:
+        return _run(conn, now, dt, day, llms, fetch_fn, budget)
+    finally:
+        for m, old in saved:
+            if old is None:
+                m.__dict__.pop("today", None)
+            else:
+                m.today = old
+
+
+def _run(conn, now, dt, day, llms, fetch_fn, budget) -> dict:
     items = fetch_fn()
     if not items:
         return _fail(conn, day, now, "No items fetched")
@@ -59,10 +74,16 @@ def run(conn: sqlite3.Connection, now: datetime, llms: dict, fetch_fn,
             break
         draft = write.write_story(llms["writer"], group)
         if draft is None:
+            if not budget.can_spend("run", dt):  # a budget refusal looks like a malformed draft
+                capped = True
+                break
             log.info("story skipped (no valid draft) topic=%s", topic)
             continue
         verdicts, votes = validate.check(llms["validators"], draft.claims, group)
         answered = len(votes)
+        if answered < sum(1 for v in llms["validators"] if v.available) and not budget.can_spend("run", dt):
+            capped = True  # validation was cut by the cap: a smaller paper beats an unvalidated story
+            break
         breakdown = rules.score(
             independent=rules.independent_count(group), has_primary=any(i.kind == "primary" for i in group),
             verdicts=verdicts, models_answered=answered,

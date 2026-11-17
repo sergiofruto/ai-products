@@ -28,16 +28,13 @@ def draft_for(item_ids, h):
 
 
 class Budget:
-    def __init__(self, n=None):
-        self.n = n
+    """Allows `n` writer calls in total; spend is observed from the writer's call count."""
+
+    def __init__(self, l, n):
+        self.l, self.n = l, n
 
     def can_spend(self, job, day):
-        if self.n is None:
-            return True
-        if self.n <= 0:
-            return False
-        self.n -= 1
-        return True
+        return len(self.l["writer"].calls) < self.n
 
 
 def votes(v="supported"):
@@ -80,7 +77,7 @@ def test_round_robin_order(conn, tmp_path, monkeypatch):
     import config
     monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
     l = llms([draft_for(["a1"], "AI1"), draft_for(["t1"], "T1")])
-    r = run(conn, l, budget=Budget(2))
+    r = run(conn, l, budget=Budget(l, 2))
     assert r["status"] == "partial" and r["note"] == "Stopped at today's cost cap"
     rows = {x[0] for x in conn.execute("SELECT id FROM stories")}
     assert rows == {f"{DAY}-ai-1", f"{DAY}-tech-1"}
@@ -89,7 +86,8 @@ def test_round_robin_order(conn, tmp_path, monkeypatch):
 def test_budget_stop_is_partial_and_keeps_done_stories(conn, tmp_path, monkeypatch):
     import config
     monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
-    r = run(conn, llms([draft_for(["a1"], "X")]), budget=Budget(1))
+    l = llms([draft_for(["a1"], "X")])
+    r = run(conn, l, budget=Budget(l, 1))
     assert r["status"] == "partial" and r["stories"] == 1
     assert conn.execute("SELECT status FROM papers WHERE day=?", (DAY,)).fetchone()[0] == "partial"
     assert conn.execute("SELECT COUNT(*) FROM stories").fetchone()[0] == 1
@@ -98,7 +96,8 @@ def test_budget_stop_is_partial_and_keeps_done_stories(conn, tmp_path, monkeypat
 def test_missing_writer_keeps_previous_paper(conn, tmp_path, monkeypatch):
     import config
     monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
-    run(conn, llms([draft_for(["a1"], "A"), draft_for(["t1"], "B")]), budget=Budget(2))
+    l0 = llms([draft_for(["a1"], "A"), draft_for(["t1"], "B")])
+    run(conn, l0, budget=Budget(l0, 2))
     before = [tuple(r) for r in conn.execute("SELECT id, headline_en FROM stories ORDER BY id")]
     l = llms([])
     l["writer"].available = False
@@ -121,8 +120,10 @@ def test_failed_without_existing_day_records_failed_paper(conn):
 def test_rerun_replaces_day(conn, tmp_path, monkeypatch):
     import config
     monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
-    run(conn, llms([draft_for(["a1"], "Old1"), draft_for(["t1"], "Old2")]), budget=Budget(2))
-    run(conn, llms([draft_for(["a1"], "New1")]), budget=Budget(1))
+    l0 = llms([draft_for(["a1"], "Old1"), draft_for(["t1"], "Old2")])
+    run(conn, l0, budget=Budget(l0, 2))
+    l1 = llms([draft_for(["a1"], "New1")])
+    run(conn, l1, budget=Budget(l1, 1))
     heads = [r[0] for r in conn.execute("SELECT headline_en FROM stories")]
     assert heads == ["New1"]
     assert conn.execute("SELECT COUNT(*) FROM claims").fetchone()[0] == 3
@@ -134,6 +135,58 @@ def test_rerun_replaces_day(conn, tmp_path, monkeypatch):
 def test_story_skipped_when_write_returns_none(conn, tmp_path, monkeypatch):
     import config
     monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
-    r = run(conn, llms([{"bad": 1}, draft_for(["t1"], "T1")]), budget=Budget(2))
+    l = llms([{"bad": 1}, draft_for(["t1"], "T1")])
+    r = run(conn, l, budget=Budget(l, 3))
     assert r["stories"] == 1
     assert [x[0] for x in conn.execute("SELECT headline_en FROM stories")] == ["T1"]
+
+
+def test_writer_refused_by_budget_is_partial_keeps_earlier(conn, tmp_path, monkeypatch):
+    import config
+    monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
+    l = llms([draft_for(["a1"], "AI1")])  # second writer call returns None, as a refusal would
+    r = run(conn, l, budget=Budget(l, 2))
+    assert r["status"] == "partial" and r["note"] == "Stopped at today's cost cap" and r["stories"] == 1
+    assert [x[0] for x in conn.execute("SELECT headline_en FROM stories")] == ["AI1"]
+
+
+def test_cap_between_writer_and_validators_drops_that_story(conn, tmp_path, monkeypatch):
+    import config
+    monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
+    l = llms([draft_for(["a1"], "AI1"), draft_for(["t1"], "T1")])
+    for v in l["validators"]:
+        v.replies = [votes()]  # second story's validators are refused
+    r = run(conn, l, budget=Budget(l, 2))
+    assert r["status"] == "partial" and r["stories"] == 1
+    assert [x[0] for x in conn.execute("SELECT headline_en FROM stories")] == ["AI1"]
+    assert conn.execute("SELECT COUNT(*) FROM claims").fetchone()[0] == 3
+
+
+def test_day_is_local_date_for_paper_and_budget(conn, tmp_path, monkeypatch):
+    import time
+    from types import SimpleNamespace
+
+    import budget as budget_mod
+    import config
+    import llm as llm_mod
+    monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
+    monkeypatch.setenv("TZ", "America/Argentina/Buenos_Aires")
+    time.tzset()
+    try:
+        text = json.dumps(draft_for(["a1"], "Local"))
+        msg = SimpleNamespace(usage=SimpleNamespace(input_tokens=100, output_tokens=50), stop_reason="end_turn",
+                              content=[SimpleNamespace(type="text", text=text)])
+        client = SimpleNamespace(messages=SimpleNamespace(create=lambda **kw: msg))
+        b = budget_mod.Budget(conn)
+        l = llms([])
+        l["writer"] = llm_mod.LLM("anthropic", "claude-sonnet-5-5", client, b, today=lambda: __import__("datetime").date(2000, 1, 1))
+        now = datetime(2026, 11, 17, 1, tzinfo=timezone.utc)  # 22:00 on the 16th in Buenos Aires
+        r = pipeline.run(conn, now, l, lambda: [mk("a1", "ai")])
+    finally:
+        monkeypatch.undo()
+        time.tzset()
+    assert r["status"] == "ok"
+    assert conn.execute("SELECT day FROM papers").fetchone()[0] == "2026-11-16"
+    assert [x[0] for x in conn.execute("SELECT DISTINCT day FROM stories")] == ["2026-11-16"]
+    assert [x[0] for x in conn.execute("SELECT DISTINCT day FROM ai_usage")] == ["2026-11-16"]
+    assert (tmp_path / "2026-11-16.md").exists()
