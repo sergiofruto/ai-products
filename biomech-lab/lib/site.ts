@@ -1,7 +1,7 @@
 export const SITE_URL = "https://biomech-lab.vercel.app";
 
 export const LINKS = {
-  github: "https://github.com/sergiofruto/agents-ops/tree/main/biomech-lab",
+  github: "https://github.com/sergiofruto/ai-products/tree/main/biomech-lab",
   linkedin: "https://www.linkedin.com/in/sergio-gabriel-fruto/",
 } as const;
 

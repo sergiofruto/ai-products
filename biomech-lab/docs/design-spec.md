@@ -3,7 +3,7 @@
 **Date:** 2026-09-29
 **Version:** v2 (incorporates `design-spec-review.md`; decisions in the last section)
 **Status:** Draft — awaiting review
-**Location:** `biomech-lab/` in the `agents-ops` repo
+**Location:** `biomech-lab/` in the `ai-products` repo
 **Time budget:** 1 weekend (v1), then published as a LinkedIn Project
 
 ## Goal
@@ -49,7 +49,7 @@ Browser (Next.js page, client-side)
 ```
 
 **Stack:** Next.js 16 (App Router), React 19, TypeScript strict, Tailwind v4, shadcn/ui —
-same as `solaris/web-next`. `@mediapipe/tasks-vision` for pose. `@anthropic-ai/sdk` for the
+same as my other Next.js apps. `@mediapipe/tasks-vision` for pose. `@anthropic-ai/sdk` for the
 coach. `@upstash/ratelimit` + Upstash Redis (Vercel Marketplace, free tier) for limits.
 Vitest for unit tests, Playwright for one browser flow test. Deployed on Vercel with root
 directory `biomech-lab/`.
@@ -229,7 +229,7 @@ MediaPipe tasks-vision includes a built-in usage logger (posts task type and tim
 
 ## Screens
 
-Single page, dark theme consistent with Solaris.
+Single page, dark theme.
 
 1. **Header:** "Biomech Lab", one-line pitch, privacy line.
 2. **Input tabs:** Camera · Upload photo · Try a sample (3 thumbnails).
@@ -299,8 +299,8 @@ frame. Resized and committed under `public/samples/`; their landmark JSON become
 - **Day 2:** live path (countdown, window, framing hints); coach route with shared definitions,
   catalog and quotas; UI polish + accessibility pass; deploy; `README.md` (demo GIF, how it works, stack).
 - **If Day 2 runs over:** the Playwright test moves to the following week; all other launch gates stay.
-- **Separate, ~1 h:** root `README.md` for agents-ops — what it is, architecture diagram, Solaris
-  screenshot, link to Biomech Lab. No live trading data exposed.
+- **Separate, ~1 h:** root `README.md` for the repo — what it is, architecture diagram,
+  screenshot, link to Biomech Lab.
 - **Then:** LinkedIn Project entry + Featured link.
 
 ## Review decisions (v1 → v2)

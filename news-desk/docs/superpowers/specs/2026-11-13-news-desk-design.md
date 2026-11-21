@@ -11,7 +11,7 @@ up, and how credible it is. It's also something Claude can read in a Claude Code
 
 ## What it is
 
-A local news service in `agents-ops/news-desk/`:
+A local news service in `ai-products/news-desk/`:
 
 1. **Home (layout A, "the newspaper"):** one column per topic. Each story has a headline, one plain
    sentence, a source count and a credibility badge. Print-like, calm, no images required.
@@ -76,7 +76,7 @@ Bands: 80+ high, 60–79 medium, below 60 low. Go deep shows each factor's point
 
 Run by hand (`python main.py run`) and, once it's stable, every morning at 07:00 via launchd, like the Security Agent.
 
-## Stack (follows the agents-ops conventions)
+## Stack
 
 Python, `feedparser`, `requests`, Flask with server-rendered templates for the UI at `127.0.0.1:5008`, SQLite, pytest,
 `anthropic` SDK, `.env` for keys (gitignored), and the same budget cap pattern. Local only, with no deploy in the MVP.
@@ -105,7 +105,7 @@ Python, `feedparser`, `requests`, Flask with server-rendered templates for the U
 
 ## Decisions settled after review (Claude's calls; Sergio can override)
 
-- **Location:** the repo folder is `claude-code-agents/news-desk/` (the repo is called agents-ops).
+- **Location:** the repo folder is `news-desk/` in `ai-products`.
   The mockups are in `docs/mockups/` (`layout.html` with option A chosen, and `go-deep.html`). They're HTML fragments from the
   brainstorm tool, so read them for structure, not exact styling.
 - **Verdict rules (SUPERSEDED by "Three-model rules" below; kept for history):** each model returns `supported`, `contradicted` or `not_found` per claim.

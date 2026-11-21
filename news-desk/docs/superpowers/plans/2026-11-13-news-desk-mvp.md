@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Everything lives in `claude-code-agents/news-desk/`. All commands run from that folder, using `.venv/bin/python`.
+- Everything lives in `news-desk/`. All commands run from that folder, using `.venv/bin/python`.
 - Keys come from `news-desk/.env` (gitignored): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `XAI_API_KEY`. A missing key means that model is skipped. Never log key values.
 - Web server binds `127.0.0.1` only, port `5008` (env `WEB_PORT`).
 - Budget: `AI_DAILY_CAP_USD` default `1.50`. `AI_PROJECTION_RESERVE_USD` default `0.25`. The pipeline run may spend up to cap − reserve, and projections may spend up to the full cap. An unknown model is priced like the most expensive known model, never as free.

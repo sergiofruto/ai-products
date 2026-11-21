@@ -30,7 +30,7 @@ export default function Home() {
         </p>
         <p>
           Demo data only: fictional clinic, no real patient data stored.{" "}
-          <a className="underline" href="https://github.com/sergiofruto/agents-ops">
+          <a className="underline" href="https://github.com/sergiofruto/ai-products/tree/main/clinic-voice-intake">
             Source on GitHub
           </a>
         </p>
