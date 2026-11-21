@@ -1,0 +1,22 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Deploy, deps, build output
+.vercel/
+.venv/
+venv/
+node_modules/
+.next/
+__pycache__/
+.pytest_cache/
+*.tsbuildinfo
+
+# Local data and tooling
+*.db
+*.db-*
+exports/
+.claude/
+.superpowers/
+.DS_Store

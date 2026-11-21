@@ -1,0 +1,8 @@
+{
+  "tools": {
+    "record_intake": "tool_3701m75npwv7e4gsh8yqe3vwjcwk",
+    "check_availability": "tool_4401m75npxcjer5sdb08nwsams79",
+    "book_appointment": "tool_5601m75npxq3fag9eb5zdkvec5yk"
+  },
+  "agent_id": "agent_6901m75nq6hwfy58y4twnh5neey2"
+}
