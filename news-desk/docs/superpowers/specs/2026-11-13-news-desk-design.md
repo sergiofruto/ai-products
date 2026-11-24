@@ -65,7 +65,7 @@ Bands: 80+ high, 60–79 medium, below 60 low. Go deep shows each factor's point
 2. **Group into stories:** per topic, a cheap model clusters items from the last 24 h into
    stories. Code validates the output (each item in at most one story; ids exist). Stories
    with 1 source are kept but scored low.
-3. **Rank per topic:** by independent source count, then recency. Keep the top N stories per column (default 5).
+3. **Rank per topic:** by independent source count, then recency. Keep the top N stories per column (default 3: 15 stories fit the daily cap; 5 did not).
 4. **Write:** for each kept story, the writer model produces the headline, one-liner, summary
    (with source ids per paragraph) and a list of 3–6 key claims.
 5. **Validate:** two different models each judge every claim against the source texts.
@@ -83,7 +83,7 @@ Python, `feedparser`, `requests`, Flask with server-rendered templates for the U
 
 ## Goals (MVP)
 
-- One morning run produces a Home with 4–5 topic columns and up to 5 stories each.
+- One morning run produces a Home with 4–5 topic columns and up to 3 stories each.
 - Read view and Go deep work for every story, with score breakdown, top 3 sources, two-model validation and projections.
 - A daily export Claude can read.
 - Daily cost under the cap (default $1).

@@ -31,7 +31,7 @@ TOPICS: list[tuple[str, str]] = [
     ("world", "World"),
     ("argentina", "Argentina"),
 ]
-STORIES_PER_TOPIC = 5
+STORIES_PER_TOPIC = 3  # 15 stories a day: fits the daily cap with room to spare
 SPARE_CANDIDATES = 3  # extra per column, to refill after a cross-column merge
 CLUSTER_WINDOW_HOURS = 24
 CLAIMS_MIN, CLAIMS_MAX = 3, 6
