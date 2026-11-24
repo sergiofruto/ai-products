@@ -190,3 +190,21 @@ def test_day_is_local_date_for_paper_and_budget(conn, tmp_path, monkeypatch):
     assert [x[0] for x in conn.execute("SELECT DISTINCT day FROM stories")] == ["2026-11-16"]
     assert [x[0] for x in conn.execute("SELECT DISTINCT day FROM ai_usage")] == ["2026-11-16"]
     assert (tmp_path / "2026-11-16.md").exists()
+
+
+def test_same_event_in_two_columns_becomes_one_story_and_column_refills(conn, tmp_path, monkeypatch):
+    import config
+    monkeypatch.setattr(config, "EXPORT_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "STORIES_PER_TOPIC", 1)
+    from dataclasses import replace
+    t2 = replace(mk("t2", "tech", host="t2b"), text="Shares jump as the board reverses course.")
+    items = [mk("a1", "ai"), mk("a2", "ai"), mk("t1", "tech"), t2]
+    l = llms([draft_for(["a2"], "AI next"), draft_for(["t1"], "Merged")])
+    # ai column: [a1], [a2]; tech column: [t1, t2]; candidate 1 (ai a1) == candidate 3 (tech t1+t2)
+    l["cluster"] = FakeLLM([{"stories": [[1], [2]]}, {"stories": [[1, 2]]}, {"same": [[1, 3]]}])
+    r = run(conn, l, items=items)
+    assert r["stories"] == 2
+    rows = {s["topic"]: s["headline_en"] for s in conn.execute("SELECT topic, headline_en FROM stories")}
+    assert rows == {"tech": "Merged", "ai": "AI next"}
+    merged = [r[0] for r in conn.execute(f"SELECT item_id FROM story_items WHERE story_id='{DAY}-tech-1'")]
+    assert sorted(merged) == ["a1", "t1", "t2"]

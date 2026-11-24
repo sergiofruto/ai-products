@@ -25,11 +25,17 @@ def _fail(conn: sqlite3.Connection, day: str, now: datetime, note: str) -> dict:
 
 
 def _queue(llm, items) -> list[tuple[str, list]]:
-    """Round-robin across topics by rank, up to STORIES_PER_TOPIC each."""
-    ranked = {}
+    """Round-robin across topics by rank, up to STORIES_PER_TOPIC each. Each column offers a few spare
+    candidates so that when the same event is merged across columns, the column it left still fills up."""
+    per_topic = config.STORIES_PER_TOPIC + config.SPARE_CANDIDATES
+    candidates = []
     for key, _ in config.TOPICS:
         topic_items = [i for i in items if i.topic == key]
-        ranked[key] = cluster.cluster(llm, key, topic_items)[:config.STORIES_PER_TOPIC] if topic_items else []
+        if topic_items:
+            candidates += [(key, g) for g in cluster.cluster(llm, key, topic_items)[:per_topic]]
+    candidates = cluster.merge_across(llm, candidates)
+    ranked = {key: sorted((g for t, g in candidates if t == key), key=cluster.rank_key, reverse=True)
+              [:config.STORIES_PER_TOPIC] for key, _ in config.TOPICS}
     queue = []
     for r in range(config.STORIES_PER_TOPIC):
         for key, _ in config.TOPICS:
