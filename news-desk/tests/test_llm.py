@@ -100,3 +100,18 @@ def test_fake_llm_records_prompts():
     assert f.ask_json("run", "s", "u", 5) is None
     assert f.ask_json("run", "s", "u", 5) == {"b": 2}
     assert f.calls[0]["system"] == "sys"
+
+
+def test_provider_error_logs_reason_without_secrets(conn, caplog):
+    exc = RuntimeError("Error code: 400 - Your credit balance is too low. key=sk-ant-api03-SECRETSECRET xai-ABCDEF123")
+    with caplog.at_level("WARNING", logger="llm"):
+        assert make(conn, StubAnthropic(exc=exc)).ask_json("run", "s", "u", 100) is None
+    assert "credit balance is too low" in caplog.text
+    assert "RuntimeError" in caplog.text
+    assert "SECRETSECRET" not in caplog.text and "ABCDEF123" not in caplog.text
+
+
+def test_provider_error_reason_is_truncated(conn, caplog):
+    with caplog.at_level("WARNING", logger="llm"):
+        make(conn, StubAnthropic(exc=RuntimeError("x" * 1000))).ask_json("run", "s", "u", 100)
+    assert "x" * 300 not in caplog.text

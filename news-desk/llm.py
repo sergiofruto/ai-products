@@ -1,5 +1,6 @@
 """Model clients: one small wrapper per provider, budget-checked, never raising."""
 import json
+import re
 import logging
 from datetime import date
 
@@ -11,6 +12,16 @@ log = logging.getLogger(__name__)
 XAI_BASE_URL = "https://api.x.ai/v1"
 # OpenAI's newer models use max_completion_tokens; xAI still takes max_tokens.
 TOKEN_PARAM = {"openai": "max_completion_tokens", "xai": "max_tokens"}
+
+
+_KEY_LIKE = re.compile(r"\b(sk|xai)-[A-Za-z0-9_\-]{6,}")
+REASON_CHARS = 240
+
+
+def _reason(e: Exception) -> str:
+    """A provider's error text (e.g. "credit balance is too low"), with anything key-shaped removed."""
+    text = _KEY_LIKE.sub("[redacted]", " ".join(str(e).split()))
+    return text[:REASON_CHARS] + ("…" if len(text) > REASON_CHARS else "")
 
 
 def extract_json(text: str) -> dict | None:
@@ -56,8 +67,8 @@ class LLM:
         try:
             text, tin, tout = self._call(system, user, max_tokens)
             self.budget.record(job, self.provider, self.model, tin, tout, self.today())
-        except Exception as e:  # never raise; log the type only
-            log.warning("%s/%s call failed: %s", self.provider, self.model, type(e).__name__)
+        except Exception as e:  # never raise; log the type and a short, redacted reason
+            log.warning("%s/%s call failed: %s: %s", self.provider, self.model, type(e).__name__, _reason(e))
             return None
         return extract_json(text) if text else None
 
